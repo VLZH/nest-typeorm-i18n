@@ -3,11 +3,11 @@ import { Observable } from 'rxjs';
 import { delay, retryWhen, scan } from 'rxjs/operators';
 import {
   AbstractRepository,
-  Connection,
   ConnectionOptions,
   EntityManager,
   Repository,
 } from 'typeorm';
+import { I18nConnection as Connection } from 'typeorm-i18n';
 import { isNullOrUndefined } from 'util';
 import * as uuid from 'uuid/v4';
 import { CircularDependencyException } from '../exceptions/circular-dependency.exception';

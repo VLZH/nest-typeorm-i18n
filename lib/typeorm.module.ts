@@ -1,5 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { Connection, ConnectionOptions } from 'typeorm';
+import { ConnectionOptions } from 'typeorm';
+import { I18nConnection as Connection } from 'typeorm-i18n';
 import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,

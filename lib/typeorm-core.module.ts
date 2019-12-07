@@ -3,18 +3,17 @@ import {
   Global,
   Inject,
   Module,
+  OnApplicationShutdown,
   Provider,
   Type,
-  OnApplicationShutdown,
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { defer } from 'rxjs';
+import { ConnectionOptions, getConnectionManager } from 'typeorm';
 import {
-  Connection,
-  ConnectionOptions,
-  createConnection,
-  getConnectionManager,
-} from 'typeorm';
+  createI18nConnection,
+  I18nConnection as Connection,
+} from 'typeorm-i18n';
 import {
   generateString,
   getConnectionName,
@@ -102,8 +101,9 @@ export class TypeOrmCoreModule implements OnApplicationShutdown {
     if (this.options.keepConnectionAlive) {
       return;
     }
-    const connection = this.moduleRef.get<Connection>(getConnectionToken(this
-      .options as ConnectionOptions) as Type<Connection>);
+    const connection = this.moduleRef.get<Connection>(
+      getConnectionToken(this.options as ConnectionOptions) as Type<Connection>,
+    );
     connection && (await connection.close());
   }
 
@@ -165,16 +165,16 @@ export class TypeOrmCoreModule implements OnApplicationShutdown {
         if (manager.has(connectionName)) {
           const connection = manager.get(connectionName);
           if (connection.isConnected) {
-            return connection;
+            return connection as any;
           }
         }
       }
     } catch {}
 
-    return await defer(() =>
+    return await defer(async () =>
       options.type
-        ? createConnection(options as ConnectionOptions)
-        : createConnection(),
+        ? await createI18nConnection(options as ConnectionOptions)
+        : await createI18nConnection(),
     )
       .pipe(handleRetry(options.retryAttempts, options.retryDelay))
       .toPromise();
