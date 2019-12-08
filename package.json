@@ -33,12 +33,10 @@
     "rxjs-compat": "6.5.3",
     "supertest": "4.0.2",
     "ts-jest": "24.1.0",
+    "typeorm-i18n": "^0.0.6",
     "typescript": "3.7.2"
   },
-  "dependencies": {
-    "typeorm-i18n": "^0.0.4",
-    "uuid": "3.3.3"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "@nestjs/common": "^6.7.0",
     "@nestjs/core": "^6.7.0",
