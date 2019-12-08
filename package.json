@@ -1,6 +1,6 @@
 {
   "name": "@vlzh/nest-typeorm-i18n",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Fork of @nestjs/typeorm for compatibility with typeorm-i18n",
   "author": "VLZH",
   "license": "MIT",
