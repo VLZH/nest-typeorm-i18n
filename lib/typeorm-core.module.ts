@@ -21,6 +21,7 @@ import {
   getEntityManagerToken,
   handleRetry,
 } from './common/typeorm.utils';
+import { EntitiesMetadataStorage } from './entities-metadata.storage';
 import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
@@ -171,12 +172,38 @@ export class TypeOrmCoreModule implements OnApplicationShutdown {
       }
     } catch {}
 
-    return await defer(async () =>
-      options.type
-        ? await createI18nConnection(options as ConnectionOptions)
-        : await createI18nConnection(),
-    )
-      .pipe(handleRetry(options.retryAttempts, options.retryDelay))
+    const connectionToken = getConnectionName(options as ConnectionOptions);
+    return await defer(async () => {
+      if (!options.type) {
+        return await createI18nConnection();
+      }
+      if (!options.autoLoadEntities) {
+        return await createI18nConnection(options as ConnectionOptions);
+      }
+
+      let entities = options.entities;
+      if (entities) {
+        entities = entities.concat(
+          EntitiesMetadataStorage.getEntitiesByConnection(connectionToken),
+        );
+      } else {
+        entities = EntitiesMetadataStorage.getEntitiesByConnection(
+          connectionToken,
+        );
+      }
+      return await createI18nConnection({
+        ...options,
+        entities,
+      } as ConnectionOptions);
+    })
+      .pipe(
+        handleRetry(
+          options.retryAttempts,
+          options.retryDelay,
+          connectionToken,
+          options.verboseRetryLog,
+        ),
+      )
       .toPromise();
   }
 }

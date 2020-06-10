@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '../../lib';
-import { Photo } from './photo/photo.entity';
-import { PhotoModule } from './photo/photo.module';
+import { PhotoSchemaModule } from './photo/schema/photo-schema.module';
 
 @Module({
   imports: [
@@ -12,13 +11,12 @@ import { PhotoModule } from './photo/photo.module';
       username: 'root',
       password: 'root',
       database: 'test',
-      entities: [Photo],
       synchronize: true,
       autoLoadEntities: true,
       retryAttempts: 2,
       retryDelay: 1000,
     }),
-    PhotoModule,
+    PhotoSchemaModule,
     TypeOrmModule.forRoot({
       name: 'connection_2',
       type: 'postgres',
@@ -27,7 +25,6 @@ import { PhotoModule } from './photo/photo.module';
       username: 'root',
       password: 'root',
       database: 'test',
-      entities: [Photo],
       synchronize: true,
       autoLoadEntities: true,
       retryAttempts: 2,
@@ -35,4 +32,4 @@ import { PhotoModule } from './photo/photo.module';
     }),
   ],
 })
-export class ApplicationModule {}
+export class AppSchemaModule {}

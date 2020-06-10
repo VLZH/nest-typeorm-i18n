@@ -2,36 +2,27 @@ import { Provider } from '@nestjs/common';
 import { AbstractRepository, ConnectionOptions, Repository } from 'typeorm';
 import { I18nConnection as Connection } from 'typeorm-i18n';
 import { getConnectionToken, getRepositoryToken } from './common/typeorm.utils';
+import { EntityClassOrSchema } from './interfaces/entity-class-or-schema.type';
 
 export function createTypeOrmProviders(
-  entities?: Function[],
+  entities?: EntityClassOrSchema[],
   connection?: Connection | ConnectionOptions | string,
 ): Provider[] {
-  const getRepository = (connection: Connection, entity: Function) => {
-    if (
-      entity.prototype instanceof Repository ||
-      entity.prototype instanceof AbstractRepository
-    ) {
-      return connection.getCustomRepository(entity);
-    }
-    return connection.options.type === 'mongodb'
-      ? connection.getMongoRepository(entity)
-      : connection.getRepository(entity);
-  };
-
-  const getCustomRepository = (connection: Connection, entity: Function) =>
-    connection.getCustomRepository(entity);
-
-  const repositories = (entities || []).map(entity => ({
+  return (entities || []).map((entity) => ({
     provide: getRepositoryToken(entity, connection),
     useFactory: (connection: Connection) => {
-      if (entity.prototype instanceof Repository) {
-        return getCustomRepository(connection, entity) as any;
+      if (
+        entity instanceof Function &&
+        (entity.prototype instanceof Repository ||
+          entity.prototype instanceof AbstractRepository)
+      ) {
+        return connection.getCustomRepository(entity);
       }
-      return getRepository(connection, entity) as any;
+
+      return connection.options.type === 'mongodb'
+        ? connection.getMongoRepository(entity)
+        : connection.getRepository(entity);
     },
     inject: [getConnectionToken(connection)],
   }));
-
-  return [...repositories];
 }

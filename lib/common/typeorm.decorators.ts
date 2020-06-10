@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { ConnectionOptions } from 'typeorm';
 import { I18nConnection as Connection } from 'typeorm-i18n';
+import { EntityClassOrSchema } from '../interfaces/entity-class-or-schema.type';
 import { DEFAULT_CONNECTION_NAME } from '../typeorm.constants';
 import {
   getConnectionToken,
@@ -9,7 +10,7 @@ import {
 } from './typeorm.utils';
 
 export const InjectRepository = (
-  entity: Function,
+  entity: EntityClassOrSchema,
   connection: string = DEFAULT_CONNECTION_NAME,
 ) => Inject(getRepositoryToken(entity, connection));
 
