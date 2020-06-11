@@ -1,6 +1,6 @@
 {
   "name": "@vlzh/nest-typeorm-i18n",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Fork of @nestjs/typeorm for compatibility with typeorm-i18n",
   "author": "VLZH",
   "license": "MIT",
@@ -46,7 +46,7 @@
     "rxjs-compat": "6.5.5",
     "supertest": "4.0.2",
     "ts-jest": "26.1.0",
-    "typeorm-i18n": "^0.0.6",
+    "typeorm-i18n": "^0.0.7",
     "typescript": "3.9.5"
   },
   "dependencies": {
@@ -65,7 +65,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -c .commitlintrc.json -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged"
     }
   },
